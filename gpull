@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Get the current branch name
+branchname=$(git rev-parse --abbrev-ref HEAD)
+if [ -z "$branchname" ]; then
+    echo "Error: Unable to determine branch name."
+    exit 1
+fi
+
+# Pull with rebase
+git pull --rebase origin "$branchname"
+if [ $? -ne 0 ]; then
+    echo "Error: Pull failed."
+    exit 1
+fi
+
+echo "Pull with rebase successful."
+
