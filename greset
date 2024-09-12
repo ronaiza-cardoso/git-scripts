@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Check if we're in a Git repository
+if [ ! -d ".git" ]; then
+    echo "Error: This script must be run from the root of a Git repository."
+    exit 1
+fi
+
+# Check if the number of commits is provided as an argument
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <number-of-commits>"
+    exit 1
+fi
+
+# Read the number of commits from the argument
+num_commits=$1
+
+# Check if the input is a positive integer
+if ! [[ "$num_commits" =~ ^[0-9]+$ ]] || [ "$num_commits" -le 0 ]; then
+    echo "Error: Please enter a valid positive integer."
+    exit 1
+fi
+
+# Perform the soft reset
+git reset --soft HEAD~"$num_commits"
+
+# Check if the reset was successful
+if [ $? -eq 0 ]; then
+    # Get the new HEAD commit message
+    new_head_msg=$(git log -1 --pretty=format:%s)
+    echo "Soft reset to HEAD~$num_commits successful."
+    echo "New HEAD commit message: $new_head_msg"
+else
+    echo "Error: Soft reset failed."
+    exit 1
+fi
